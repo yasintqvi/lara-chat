@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewMessage;
 use App\Http\Requests\StoreGroupMessage;
 use App\Http\Resources\MessageResource;
 use App\Models\Group;
@@ -28,8 +29,10 @@ class GroupMessageController extends Controller
     {
         $message = $group->messages()->create([
             'message' => $request->validated('message'),
-            'group_id' => "01jsmsa1rjvrfysk2cvhfvp8qh"
+            'group_id' => user()->getAuthIdentifier()
         ]);
+
+        broadcast((new NewMessage($message)))->toOthers();
 
         return $this->baseResponse(data: MessageResource::make($message), message: __('messages.group.message.create'));
     }
