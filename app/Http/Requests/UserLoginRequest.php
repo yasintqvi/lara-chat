@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-class StoreGroupMessage extends BaseFormRequest
+class UserLoginRequest extends BaseFormRequest
 {
 
     /**
@@ -13,7 +13,8 @@ class StoreGroupMessage extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'message' => ['required', 'string'],
+            'email' => ['required', 'string', 'email'],
+            'password' => ['required', 'string'],
         ];
     }
 }

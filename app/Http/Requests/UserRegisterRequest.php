@@ -2,9 +2,8 @@
 
 namespace App\Http\Requests;
 
-class StoreGroupMessage extends BaseFormRequest
+class UserRegisterRequest extends BaseFormRequest
 {
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -13,7 +12,9 @@ class StoreGroupMessage extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'message' => ['required', 'string'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ];
     }
 }

@@ -2,13 +2,27 @@
 
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\GroupMessageController;
+use App\Http\Controllers\UserLoginController;
+use App\Http\Controllers\UserLogoutController;
+use App\Http\Controllers\UserRegisterController;
 use Illuminate\Support\Facades\Route;
 
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
 
-Route::prefix('groups')->group(function () {
+Route::prefix('auth')->group(function () {
+
+    Route::post('/register', UserRegisterController::class)->name('auth.register');
+
+    Route::post('/login', UserLoginController::class)->name('auth.login');
+
+    Route::middleware('auth:sanctum')->group(function () {
+
+        Route::get('user', fn() => user())->name('auth.user');
+
+        Route::post('/logout', UserLogoutController::class)->name('auth.logout');
+    });
+});
+
+Route::prefix('groups')->middleware('auth:sanctum')->group(function () {
 
     Route::get('/', [GroupController::class, 'index'])->name('groups.index');
 

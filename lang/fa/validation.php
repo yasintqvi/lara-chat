@@ -163,5 +163,8 @@ return [
         'title' => 'عنوان',
         'description' => 'توضیحات',
         'members' => 'اعضا',
+        'name' => 'نام',
+        'email' => 'ایمیل',
+        'password' => 'کلمه عبور',
     ],
 ];
