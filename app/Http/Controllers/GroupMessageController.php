@@ -29,7 +29,7 @@ class GroupMessageController extends Controller
     {
         $message = $group->messages()->create([
             'message' => $request->validated('message'),
-            'group_id' => user()->getAuthIdentifier()
+            'user_id' => user()->getAuthIdentifier()
         ]);
 
         broadcast((new NewMessage($message)))->toOthers();
