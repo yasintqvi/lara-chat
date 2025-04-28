@@ -22,7 +22,11 @@ class GroupController extends Controller
             $groups->with('users');
         }
 
-        $groups = Group::where('user_id', user()->getAuthIdentifier())->paginate($request->get('perpage', 10));
+        $groups = Group::whereHas(
+            'users',
+            fn($q) => $q->where('user_id', user()->getAuthIdentifier())
+        )
+            ->get();
 
         return $this->baseResponse(data: GroupResource::collection($groups), message: __('messages.group.all'));
     }
