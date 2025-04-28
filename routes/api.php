@@ -5,6 +5,7 @@ use App\Http\Controllers\GroupMessageController;
 use App\Http\Controllers\UserLoginController;
 use App\Http\Controllers\UserLogoutController;
 use App\Http\Controllers\UserRegisterController;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Route;
 
 
@@ -16,7 +17,7 @@ Route::prefix('auth')->group(function () {
 
     Route::middleware('auth:sanctum')->group(function () {
 
-        Route::get('user', fn() => user())->name('auth.user');
+        Route::get('user', fn() => UserResource::make(user()))->name('auth.user');
 
         Route::post('/logout', UserLogoutController::class)->name('auth.logout');
     });

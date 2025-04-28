@@ -39,8 +39,6 @@ class NewMessage implements ShouldBroadcast
 
     public function broadcastWith()
     {
-        return [
-            'message' => $this->message->load('user'),
-        ];
+        return new Channel('groups.' . $this->message->group_id);
     }
 }
