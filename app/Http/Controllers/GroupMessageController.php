@@ -17,7 +17,7 @@ class GroupMessageController extends Controller
      */
     public function index(Request $request, Group $group): JsonResponse
     {
-        $messages = $group->messages()->paginate($request->get('perpage'));
+        $messages = $group->messages()->paginate($request->get('perpage', 10000));
 
         return $this->baseResponse(data: MessageResource::collection($messages), message: __('messages.group.message.all'));
     }
