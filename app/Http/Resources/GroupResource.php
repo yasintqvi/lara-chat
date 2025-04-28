@@ -20,6 +20,7 @@ class GroupResource extends JsonResource
             "description" => $this->description,
             "users" => $this->whenLoaded('users', fn() => UserResource::collection($this->users)),
             "messages" => $this->whenLoaded('messages', fn() => MessageResource::collection($this->messages)),
+            'avatar' => $this->avatar,
             "created_at" => $this->created_at,
             'updated_at' => $this->updated_at
         ];

@@ -13,7 +13,8 @@ class Group extends Model
 
     protected $fillable = [
         'title',
-        'description'
+        'description',
+        'avatar'
     ];
 
     public function messages(): HasMany
@@ -24,5 +25,10 @@ class Group extends Model
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
+    }
+
+    public function getAvatarAttribute(): string
+    {
+        return $this->avatar ?? asset('images/group.png');
     }
 }
