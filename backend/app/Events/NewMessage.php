@@ -41,6 +41,7 @@ class NewMessage implements ShouldBroadcast
             'id' => $this->message->id,
             'message' => $this->message->message,
             'user_id' => $this->message->user_id,
+            'user' => $this->message->user,
             'created_at' => $this->message->created_at
         ];
     }
