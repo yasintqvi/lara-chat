@@ -1,7 +1,5 @@
 <template>
-    <!-- Chat Area -->
     <div class="flex-1 flex flex-col">
-        <!-- Chat Header -->
         <div v-if="activeGroup" class="bg-white p-4 border-b border-gray-200 flex items-center">
             <img :src="activeGroup.avatar" class="w-10 h-10 rounded-full mr-3" alt="Profile">
             <div>
@@ -10,13 +8,11 @@
             </div>
         </div>
 
-        <!-- Messages -->
         <div ref="messagesContainer" class="flex-1 p-4 overflow-y-auto bg-gray-50">
             <div class="space-y-3">
                 <Message v-for="message in messages" :key="message.id" :user="user" :message="message" />
             </div>
         </div>
-        <!-- Message Input -->
         <div class="bg-white p-4 border-t border-gray-200">
             <form @submit.prevent="sendMessage" class="flex">
                 <input v-model="newMessage" type="text" placeholder="Type a message..."
@@ -62,22 +58,24 @@ export default {
 
     watch: {
         activeGroup(newGroup) {
-            if (newGroup) {
-                this.loadMessages(newGroup.id);
-                this.listenForNewMessages(newGroup.id);
+            if (!newGroup || !newGroup.id) {
+                return;
             }
+
+            if (this.echoListener) {
+                this.echoListener = null;
+            }
+
+            this.loadMessages(newGroup.id);
+            this.listenForNewMessages(newGroup.id);
         },
     },
 
     methods: {
         async loadMessages(groupId) {
-            try {
-                const response = await groupService.getGroupMessages(groupId);
-                this.messages = response.data || [];
-                this.scrollToBottom();
-            } catch (error) {
-                console.error("Failed to load messages:", error);
-            }
+            const response = await groupService.getGroupMessages(groupId);
+            this.messages = response.data || [];
+            this.scrollToBottom();
         },
 
         async sendMessage() {
@@ -96,8 +94,13 @@ export default {
         },
 
         listenForNewMessages(groupId) {
+            if (!groupId) {
+                return;
+            }
+
             if (this.echoListener) {
                 this.echoListener.stopListening();
+                this.echoListener = null;
             }
 
             this.echoListener = Echo.channel(`group.${groupId}`)
@@ -107,7 +110,7 @@ export default {
                         user_id: data.user_id,
                         message: data.message,
                         created_at: data.created_at,
-                        user: this.user
+                        user: data.user
                     });
                     this.scrollToBottom();
                 })
@@ -115,6 +118,7 @@ export default {
                     console.error('Pusher error:', error);
                 });
         },
+
 
         scrollToBottom() {
             this.$nextTick(() => {
@@ -130,10 +134,9 @@ export default {
     },
 
     beforeDestroy() {
-        console.log(this.echoListener);
         if (this.echoListener) {
             this.echoListener.stopListening();
         }
-    },
+    }
 }
 </script>

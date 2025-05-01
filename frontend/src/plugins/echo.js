@@ -1,10 +1,9 @@
-
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 
 window.Pusher = Pusher;
 
-export default new Echo({
+const echo = new Echo({
     broadcaster: 'pusher',
     key: '95c4470e82ccf17e4725',
     cluster: 'us3',
@@ -20,3 +19,6 @@ export default new Echo({
         withCredentials: true,
     }
 });
+
+
+export default echo;
