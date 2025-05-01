@@ -31,7 +31,7 @@ Route::prefix('groups')->middleware('auth:sanctum')->group(function () {
 
     Route::post('/', [GroupController::class, 'store'])->name('groups.store');
 
-    Route::put('/{group}', [GroupController::class, 'update'])->name('groups.store');
+    Route::put('/{group}', [GroupController::class, 'update'])->name('groups.update');
 
     Route::delete('/{group}', [GroupController::class, 'destroy'])->name('groups.delete');
 

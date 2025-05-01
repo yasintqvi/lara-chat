@@ -30,15 +30,23 @@ class NewMessage implements ShouldBroadcast
      *
      * @return array<int, \Illuminate\Broadcasting\Channel>
      */
-    public function broadcastOn(): array
+    public function broadcastOn(): Channel
     {
-        return [
-            new Channel('group.' . $this->message->group_id)
-        ];
+        return new Channel('group.' . $this->message->group_id);
     }
 
     public function broadcastWith()
     {
-        return new Channel('groups.' . $this->message->group_id);
+        return [
+            'id' => $this->message->id,
+            'message' => $this->message->message,
+            'user_id' => $this->message->user_id,
+            'created_at' => $this->message->created_at
+        ];
+    }
+
+    public function broadcastAs(): string
+    {
+        return 'message.created';
     }
 }
