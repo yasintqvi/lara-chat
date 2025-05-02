@@ -78,7 +78,6 @@ export default {
             return initials.substring(0, 2);
         },
         stringToColor(str) {
-            // Generate a consistent color from the string
             let hash = 0;
             for (let i = 0; i < str.length; i++) {
                 hash = str.charCodeAt(i) + ((hash << 5) - hash);
