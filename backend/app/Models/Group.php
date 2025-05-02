@@ -26,9 +26,4 @@ class Group extends Model
     {
         return $this->belongsToMany(User::class);
     }
-
-    public function getAvatarAttribute(): string
-    {
-        return $this->avatar ?? asset('images/group.png');
-    }
 }

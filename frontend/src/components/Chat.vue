@@ -1,5 +1,4 @@
 <template>
-    <!-- Unauthenticated - Show only Start Chat button -->
     <div v-if="!user" class="min-h-[80vh] flex items-center justify-center bg-gray-50">
         <div class="text-center p-8 max-w-md mx-auto">
             <h1 class="text-3xl font-bold text-gray-800 mb-4">Welcome to ChatApp</h1>
@@ -10,24 +9,33 @@
         </div>
     </div>
 
-    <!-- Authenticated - Show full chat interface -->
     <div v-else class="flex h-[80vh] bg-gray-100">
-        <!-- Sidebar -->
-        <div class="w-64 bg-white border-r border-gray-200 p-4">
-            <h2 class="text-xl font-bold mb-4">Groups</h2>
-            <div v-for="group in groups" :key="group.id" @click="selectgroup(group)"
-                class="flex items-center p-2 hover:bg-gray-100 rounded cursor-pointer"
-                :class="{ 'bg-blue-50': activeGroup?.id === group.id }">
-                <img :src="group.avatar" class="w-10 h-10 rounded-full mr-3" alt="Profile">
-                <div>
-                    <p class="font-medium">{{ group.title }}</p>
-                    <p class="text-sm text-gray-500">{{ group.status }}</p>
+        <div class="w-64 bg-white border-r border-gray-200 flex flex-col">
+            <div class="flex-1 overflow-y-auto p-2">
+                <h2 class="text-lg font-semibold px-2 py-1 text-gray-700">Your Conversations</h2>
+                <div v-for="group in groups" :key="group.id" @click="selectgroup(group)"
+                    class="flex items-center p-2 hover:bg-gray-100 rounded-lg cursor-pointer transition"
+                    :class="{ 'bg-blue-50 border border-blue-100': activeGroup?.id === group.id }">
+                    <div class="relative">
+                        <Avatar :image="group.avatar" :alt="group.title" />
+
+                        <span v-if="group.unread"
+                            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                            {{ group.unread }}
+                        </span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-medium truncate">{{ group.title }}</p>
+                        <p class="text-sm text-gray-500 truncate">{{ group.lastMessage || 'No messages yet' }}</p>
+                    </div>
+                    <span v-if="group.lastMessageTime" class="text-xs text-gray-400 ml-2 whitespace-nowrap">
+                        {{ formatTimeShort(group.lastMessageTime) }}
+                    </span>
                 </div>
             </div>
         </div>
 
         <Messages :user="user" :active-group="activeGroup" />
-
     </div>
 </template>
 
@@ -35,6 +43,7 @@
 import authService from '@/services/authService';
 import groupService from '@/services/groupService';
 import Messages from './Messages.vue';
+import Avatar from './Avatar.vue';
 
 export default {
     data() {
@@ -45,21 +54,44 @@ export default {
         }
     },
     components: {
-        Messages
+        Messages,
+        Avatar
     },
     methods: {
         redirectToLogin() {
             this.$router.push('/login');
         },
         selectgroup(group) {
-            this.activeGroup = group
+            this.activeGroup = group;
+        },
+        formatTimeShort(timeString) {
+            const time = new Date(timeString);
+            return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        },
+        getInitials(name) {
+            if (!name) return '';
+            const parts = name.split(' ');
+            let initials = parts[0].charAt(0).toUpperCase();
+            if (parts.length > 1) {
+                initials += parts[parts.length - 1].charAt(0).toUpperCase();
+            }
+            return initials.substring(0, 2);
+        },
+        stringToColor(str) {
+            // Generate a consistent color from the string
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = str.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            const hue = Math.abs(hash % 360);
+            return `hsl(${hue}, 60%, 50%)`;
         },
         async getCurrentUser() {
             try {
-                const response = await authService.getUser()
+                const response = await authService.getUser();
                 if (response?.data) {
-                    this.$store.dispatch('login', response.data)
-                    this.user = response.data
+                    this.$store.dispatch('login', response.data);
+                    this.user = response.data;
                 }
             } catch (error) {
                 console.error("Failed to load user:", error);
@@ -67,20 +99,18 @@ export default {
         },
         async getUserGroups() {
             try {
-                const response = await groupService.getUserGroups()
+                const response = await groupService.getUserGroups();
                 if (response?.data) {
-                    this.groups = response.data
+                    this.groups = response.data;
                 }
-
             } catch (error) {
-                console.error('Failed to get groups:', error)
+                console.error('Failed to get groups:', error);
             }
         },
     },
     created() {
-        this.getCurrentUser()
-
-        this.getUserGroups()
+        this.getCurrentUser();
+        this.getUserGroups();
     }
 }
 </script>
@@ -93,6 +123,7 @@ export default {
 
 ::-webkit-scrollbar-track {
     background: #f1f1f1;
+    border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb {
