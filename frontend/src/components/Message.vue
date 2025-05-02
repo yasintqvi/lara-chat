@@ -6,7 +6,7 @@
                 <span class="font-medium m-2">You</span>
                 <span class="text-xs text-gray-500">{{ formatTime(message.created_at) }}</span>
             </div>
-            <div class="mt-1 p-3 rounded-lg bg-blue-500 text-white ml-auto text-wrap max-w-[80%] shadow-md">
+            <div class="mt-1 p-3 rounded-lg bg-blue-500 text-white ml-auto text-wrap max-w-[55%] shadow-md">
                 {{ message.message }}
             </div>
         </div>

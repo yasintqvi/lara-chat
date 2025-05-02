@@ -1,21 +1,11 @@
 <template>
     <div class="relative">
-        <!-- Profile button -->
-        <button @click="toggleDropdown" class="flex items-center space-x-2 focus:outline-none">
-            <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white">
-                {{ userInitials }}
-            </div>
-            <span class="text-white">{{ userName }}</span>
-            <svg class="w-4 h-4 text-white transition-transform duration-200"
-                :class="{ 'transform rotate-180': showDropdown }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-        </button>
+        <Avatar @click="toggleDropdown" :image="user.avatar" :alt="user.name" class="w-8 h-8 cursor-pointer" />
 
         <!-- Dropdown menu -->
         <div v-show="showDropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
             <div class="px-4 py-2 text-sm text-gray-700 border-b">
-                Signed in as <span class="font-medium">{{ userName }}</span>
+                Signed in as <span class="font-medium">{{ user.name }}</span>
             </div>
             <button @click="logout" class="block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-gray-100">
                 Logout
@@ -28,6 +18,7 @@
 import { mapGetters } from 'vuex';
 import authService from '@/services/authService';
 import { useToast } from 'vue-toastification';
+import Avatar from './Avatar.vue';
 
 
 export default {
@@ -38,17 +29,9 @@ export default {
     },
     computed: {
         ...mapGetters(['user']),
-        userName() {
-            return this.user?.name || 'User';
-        },
-        userInitials() {
-            if (!this.user?.name) return 'U';
-            return this.user.name
-                .split(' ')
-                .map(n => n[0])
-                .join('')
-                .toUpperCase();
-        }
+    },
+    components: {
+        Avatar
     },
     methods: {
         toggleDropdown() {

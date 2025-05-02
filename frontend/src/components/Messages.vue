@@ -1,5 +1,5 @@
 <template>
-    <div class="flex-1 flex flex-col">
+    <div class="flex-1 flex flex-col" v-if="activeGroup">
         <div v-if="activeGroup" class="bg-white p-4 border-b border-gray-200 flex items-center">
             <Avatar :image="activeGroup.avatar" :alt="activeGroup.title" />
             <div>
@@ -24,6 +24,7 @@
             </form>
         </div>
     </div>
+    <NoChatSelected v-else />
 </template>
 
 <script>
@@ -32,6 +33,7 @@ import { useToast } from 'vue-toastification';
 import Message from "./Message.vue";
 import Echo from '@/plugins/echo'
 import Avatar from './Avatar.vue';
+import NoChatSelected from './NoChatSelected.vue';
 
 export default {
     data() {
@@ -55,7 +57,8 @@ export default {
 
     components: {
         Message,
-        Avatar
+        Avatar,
+        NoChatSelected
     },
 
     watch: {

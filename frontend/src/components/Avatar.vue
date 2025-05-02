@@ -1,6 +1,6 @@
 <template>
-    <div v-if="avatar" class="w-10 h-10 rounded-full flex-shrink-0 mr-3">
-        <img :src="avatar" class="w-full h-full object-cover" alt="Group">
+    <div v-if="image" class="w-10 h-10 rounded-full flex-shrink-0 mr-3">
+        <img :src="image" class="w-full h-full object-cover" alt="Group">
     </div>
     <div v-else class="w-10 h-10 rounded-full mr-3 flex items-center justify-center flex-shrink-0"
         :style="{ backgroundColor: stringToColor(alt), color: 'white' }">
@@ -13,7 +13,6 @@
 export default {
     props: {
         image: {
-            type: String,
             required: true,
         },
         alt: {
